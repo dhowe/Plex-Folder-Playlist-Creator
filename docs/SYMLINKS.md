@@ -50,6 +50,7 @@ Playlist Structure:
 
 #### 1. Create playlist folder with symlinks:
 
+**Linux/macOS:**
 ```bash
 # Create folder
 mkdir ~/playlists/My-Favorites
@@ -60,7 +61,23 @@ ln -s "/media/music/Artist/Song2.mp3" ~/playlists/My-Favorites/
 ln -s "/media/music/Other/Song3.mp3" ~/playlists/My-Favorites/
 ```
 
-**Tip:** Use wildcards for bulk linking:
+**Windows (PowerShell - Run as Administrator or enable Developer Mode):**
+```powershell
+# Create folder
+New-Item -ItemType Directory -Path "$HOME\playlists\My-Favorites"
+
+# Create symlinks (requires admin or Developer Mode)
+New-Item -ItemType SymbolicLink -Path "$HOME\playlists\My-Favorites\Song1.mp3" -Target "D:\music\Artist\Song1.mp3"
+New-Item -ItemType SymbolicLink -Path "$HOME\playlists\My-Favorites\Song2.mp3" -Target "D:\music\Artist\Song2.mp3"
+```
+
+**Windows Alternative (Hard links - no admin needed):**
+```powershell
+# Hard links work without admin but only for files on same drive
+New-Item -ItemType HardLink -Path "$HOME\playlists\My-Favorites\Song1.mp3" -Target "D:\music\Artist\Song1.mp3"
+```
+
+**Tip (Linux/macOS):** Use wildcards for bulk linking:
 ```bash
 # Link all files from a folder
 ln -s /media/music/Artist/*.mp3 ~/playlists/My-Favorites/
@@ -153,6 +170,53 @@ Audio files automatically detected:
 - `.wma`
 - `.ape`
 - `.opus`
+
+---
+
+## Platform-Specific Notes
+
+### Windows
+
+**Symlink Support:**
+- ✅ **Symbolic links** - Requires admin OR Developer Mode (Windows 10+)
+- ✅ **Junction points** - Works without admin (directories only)
+- ✅ **Hard links** - Works without admin (files only, same drive)
+
+**Enable Developer Mode (Windows 10/11):**
+1. Settings → Update & Security → For developers
+2. Enable **Developer Mode**
+3. Restart (may be required)
+4. Now symlinks work without admin rights!
+
+**PowerShell Symlink Commands:**
+```powershell
+# Symbolic link (files)
+New-Item -ItemType SymbolicLink -Path "playlist\track.mp3" -Target "D:\music\track.mp3"
+
+# Junction point (directories)
+New-Item -ItemType Junction -Path "playlist\folder" -Target "D:\music\folder"
+
+# Hard link (files, same drive, no admin needed)
+New-Item -ItemType HardLink -Path "playlist\track.mp3" -Target "D:\music\track.mp3"
+```
+
+**Recommendation for Windows Users:**
+- Use **hard links** for simplicity (no admin needed)
+- Files must be on same drive
+- Works with `fs.realpathSync()` just like symlinks
+
+### macOS
+
+**Symlink Support:**
+- ✅ **Unix symlinks** (`ln -s`) - Fully supported
+- ✅ **Finder aliases** - Automatically resolved by Node.js
+- No special permissions needed
+
+### Linux
+
+**Symlink Support:**
+- ✅ **Symbolic links** (`ln -s`) - Fully supported
+- No special permissions needed
 
 ---
 
