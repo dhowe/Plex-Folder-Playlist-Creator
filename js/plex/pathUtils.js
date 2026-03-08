@@ -6,8 +6,11 @@ import * as logger from './logger.js';
  * Resolves symlinks and aliases to their real filesystem path.
  * Returns the original path if resolution fails or if in browser context.
  * 
- * On macOS, this automatically handles Finder aliases.
- * On Linux/Unix, this resolves symlinks created with ln -s.
+ * Platform support:
+ * - macOS: Handles Finder aliases and Unix symlinks
+ * - Linux: Resolves symlinks created with ln -s
+ * - Windows: Resolves symlinks, junction points, and hard links
+ *   Note: Creating symlinks on Windows requires admin rights or Developer Mode
  * 
  * @param {string} inputPath - Path that may contain symlinks
  * @returns {string} Resolved real path, or original if unavailable
